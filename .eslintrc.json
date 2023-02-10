@@ -1,0 +1,122 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parser": "vue-eslint-parser",
+  "ignorePatterns": [
+    "coverage",
+    "*.js"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser"
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:vue/vue3-recommended"
+  ],
+  "rules": {
+    "vue/no-unused-vars": "warn",
+    "vue/require-v-for-key": "off",
+    "vue/multi-word-component-names": "off",
+    "vue/valid-v-for": "off",
+    "vue/first-attribute-linebreak": ["error", {
+      "singleline": "beside",
+      "multiline": "beside"
+    }],
+    "vue/max-attributes-per-line": ["error", {
+      "singleline": 5,  
+      "multiline": 5
+    }],
+    "vue/html-quotes": [ "error", "single", { "avoidEscape": true } ],
+    
+    "@typescript-eslint/no-unused-vars": [
+      "warn"
+    ],
+    "@typescript-eslint/no-empty-function": [
+      "warn"
+    ],
+    "@typescript-eslint/no-explicit-any": [
+      "off"
+    ],
+    "@typescript-eslint/no-non-null-assertion": [
+      "off"
+    ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/space-before-blocks": "warn",
+    "@typescript-eslint/semi": [
+      "off"
+    ],
+
+    "space-before-blocks": "off",
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "func-style": [
+      "off"
+    ],
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
+    "no-return-await": [
+      "error"
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always",
+      {
+        "objectsInObjects": true
+      }
+    ],
+    "space-infix-ops": [
+      "error"
+    ],
+    "space-in-parens": [
+      "error",
+      "never"
+    ],
+    "switch-colon-spacing": [
+      "error"
+    ],
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": false
+      }
+    ],
+    "no-bitwise": "off",
+    "no-constant-condition": [
+      "error",
+      {
+        "checkLoops": false
+      }
+    ],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "any"
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 150,
+        "ignoreStrings": true,
+        "ignoreRegExpLiterals": true,
+        "ignoreTemplateLiterals": true
+      }
+    ]
+  }
+}

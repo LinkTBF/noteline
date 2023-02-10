@@ -1,0 +1,96 @@
+{
+  "name": "noteline",
+  "displayName": "noteline",
+  "description": "A vscode extension to record the line you jumped frequently",
+  "version": "1.0.0",
+  "author": "SamNofee",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Notebooks",
+    "Other"
+  ],
+  "main": "./build/ts/extension.js",
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "noteline.close",
+        "title": "Noteline: Close"
+      },
+      {
+        "command": "noteline.open",
+        "title": "Noteline: Open"
+      },
+      {
+        "command": "noteline.setting",
+        "title": "Noteline: Setting"
+      },
+      {
+        "command": "noteline.record",
+        "title": "Noteline: Record"
+      },
+      {
+        "command": "noteline.showRecord",
+        "title": "Noteline: Show Record"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "noteline_activebar",
+          "title": "Noteline",
+          "icon": "./src/assets/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "noteline_activebar": [
+        {
+          "type": "webview",
+          "id": "noteline_main_view",
+          "name": "Noteline"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "noteline.record",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "noteline.showRecord",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "npm run build:ts && npm run build:vite",
+    "build:ts": "npx tsc -p ./tsconfig.extension.json --skipLibCheck",
+    "build:vite": "vite build",
+    "lint": "eslint \"src/**/*.{ts,vue}\""
+  },
+  "devDependencies": {
+    "chance": "^1.1.9",
+    "lodash": "^4.17.21",
+    "vue": "^3.2.45",
+    "@types/node": "^18.11.17",
+    "@types/vscode": "^1.73.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "eslint": "^8.30.0",
+    "eslint-plugin-vue": "^9.8.0",
+    "jsdom": "^20.0.3",
+    "typescript": "^4.8.4",
+    "vite": "^2.9.14",
+    "vue-tsc": "^0.40.6"
+  }
+}
