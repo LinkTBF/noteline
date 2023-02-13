@@ -15,7 +15,6 @@
     "moduleResolution": "node"
   },
   "include": [
-    "src/extension.ts",
-    "src/BaseViewProvider.ts"
+    "src/extension.ts"
   ]
 }

@@ -1,7 +1,5 @@
-// import * as vscode from 'vscode'
 import Chance from 'chance'
-import * as fs from 'fs'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 export function template(source: string, data: Record<string, string>): string {
   return (_.template(source))(data)
