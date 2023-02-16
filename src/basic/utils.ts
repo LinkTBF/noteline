@@ -5,10 +5,8 @@ export function template(source: string, data: Record<string, string>): string {
   return (_.template(source))(data)
 }
 
-// export function getRootPath(): string {
-//   return vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
-//     ? vscode.workspace.workspaceFolders[0].uri.fsPath
-//     : ''
-// }
+export function basename(filepath: string): string {
+  return filepath
+}
 
 export const chance = new Chance()

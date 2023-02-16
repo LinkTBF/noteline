@@ -1,0 +1,35 @@
+:root {
+  --note-item-height: 20px;
+  --note-item-font-size: 14px;
+}
+
+html, body {
+  margin: 0px;
+  padding: 0px;
+}
+
+.note-item {
+  widows: 100%;
+  height: var(--note-item-height);
+  line-height: var(--note-item-height);
+  padding: 0px 3px;
+  border: solid 1px white;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.note-custom {
+  position: fixed;
+  top: 0vh;
+  height: 50vh;
+  width: 100%;
+  border-bottom: solid white 1px;
+}
+
+.note-system {
+  position: fixed;
+  top: 50vh;
+  width: 100%;
+  height: 50vh;
+}

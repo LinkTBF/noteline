@@ -1,3 +1,4 @@
+import { basename } from './basic/utils'
 
 export type NoteColor = 'RED' | 'ORANGE' | 'YELLOW' | 'GREEN' | 'BLUE' | 'PURPLE'
 export type NoteColorMapping = Record<NoteColor, string>
@@ -24,3 +25,25 @@ export const DefaultNoteColorMapping: NoteColorMapping = {
   BLUE: '#0D4C9A',
   PURPLE: '#C358E2'
 } as const
+
+export function createNote(
+  filepath: string,
+  content: string,
+  line: number,
+  options?: {
+    color?: NoteColor,
+    type?: NoteType,
+    remark?: string
+  }
+): Note {
+  return {
+    id: `${filepath}${content}${line}`,
+    line, content, filepath,
+    basename: basename(filepath),
+    color: options?.color || 'RED',
+    type: options?.type || 'CUSTOM',
+    remark: options?.remark || '',
+    update: new Date(),
+    trend: 0,
+  }
+}

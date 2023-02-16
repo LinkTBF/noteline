@@ -26,8 +26,8 @@
         "title": "Noteline: Open"
       },
       {
-        "command": "noteline.setting",
-        "title": "Noteline: Setting"
+        "command": "noteline.deleteCustomNote",
+        "title": "Noteline: Delete custom note"
       },
       {
         "command": "noteline.record",
@@ -68,14 +68,22 @@
           "when": "editorTextFocus",
           "group": "navigation"
         }
+      ],
+      "webview/context": [
+        {
+          "command": "noteline.deleteCustomNote",
+          "group": "navigation",
+          "when": "webviewId == noteline_view"
+        }
       ]
     }
   },
   "scripts": {
-    "dev": "npx nodemon -e ts,vue --exec npm run build",
     "build": "npm run build:ts && npm run build:vite",
     "build:ts": "npx tsc -p ./tsconfig.extension.json --skipLibCheck",
     "build:vite": "npx vite build",
+    "dev": "npx nodemon -e ts,vue,css --exec npm run build",
+    "vite": "npx vite ./src/webview --config vite.config.ts --open",
     "lint": "npx eslint \"src/**/*.{ts,vue}\""
   },
   "devDependencies": {

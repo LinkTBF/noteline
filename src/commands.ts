@@ -1,14 +1,12 @@
 import * as vscode from 'vscode'
-import * as path from 'path'
-import { chance } from './basic/utils'
-import { Note } from './noteline'
+import { Note, createNote } from './noteline'
 import { NotelineViewProvider } from './providers'
 
 export function registerCommands(context: vscode.ExtensionContext) {
 	const commands: Record<string, () => void> = {
 		open: defaultCommand,
 		close: defaultCommand,
-		setting: defaultCommand,
+		deleteCustomNote: deleteCustomNoteCommand,
 		record: recordCommand,
 		show: defaultCommand
 	}
@@ -25,21 +23,14 @@ export function recordCommand() {
 		const document = activeEditor.document
 		const curPos = activeEditor.selection.active
 
-		const note: Note = {
-			id: chance.hash(),
-			color: 'RED',
-			line: curPos.line,
-			content: document.lineAt(curPos.line).text,
-			filepath: document.fileName,
-			basename: path.basename(document.fileName),
-			type: 'CUSTOM',
-			remark: '',
-			update: new Date(),
-			trend: 0
-		}
-
+		const note: Note = createNote(document.fileName, document.lineAt(curPos.line).text, curPos.line)
+		
 		NotelineViewProvider.webview.postMessage({ command: 'ADD_RECORD', data: JSON.stringify(note) })
 	}
+}
+
+export function deleteCustomNoteCommand() {
+	NotelineViewProvider.webview.postMessage({ command: 'DELETE_NOTE', data: true })
 }
 
 export function defaultCommand() {

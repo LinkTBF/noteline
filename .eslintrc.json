@@ -31,7 +31,6 @@
       "singleline": 5,  
       "multiline": 5
     }],
-    "vue/html-quotes": [ "error", "single", { "avoidEscape": true } ],
     
     "@typescript-eslint/no-unused-vars": [
       "warn"
