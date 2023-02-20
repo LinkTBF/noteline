@@ -1,14 +1,16 @@
 import * as vscode from 'vscode'
-import { Note, createNote } from './noteline'
+import { Note, createNote } from './basic/noteline'
 import { NotelineViewProvider } from './providers'
+import {
+  MsgTypeFromVscodeToWebview,
+	MsgFromVscodeToWebview
+} from './basic/message'
 
 export function registerCommands(context: vscode.ExtensionContext) {
 	const commands: Record<string, () => void> = {
-		open: defaultCommand,
-		close: defaultCommand,
+		addNote: addNoteCommand,
 		deleteCustomNote: deleteCustomNoteCommand,
-		record: recordCommand,
-		show: defaultCommand
+		clearSystemNotes: clearSystemNotesCommand
 	}
 
 	for (const key in commands) {
@@ -16,23 +18,40 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	}
 }
 
-export function recordCommand() {
+export function addNoteCommand() {
 	const activeEditor = vscode.window.activeTextEditor
 
 	if (activeEditor) {
 		const document = activeEditor.document
-		const curPos = activeEditor.selection.active
+		const line = activeEditor.selection.active.line
 
-		const note: Note = createNote(document.fileName, document.lineAt(curPos.line).text, curPos.line)
-		
-		NotelineViewProvider.webview.postMessage({ command: 'ADD_RECORD', data: JSON.stringify(note) })
+		const note: Note = createNote(document.fileName, document.lineAt(line).text, line)
+
+		const msgType: MsgTypeFromVscodeToWebview = 'ADD_NOTE'
+		const msg: MsgFromVscodeToWebview<typeof msgType> = {
+			type: msgType,
+			data: {
+				note: JSON.stringify(note)
+			}
+		}
+		NotelineViewProvider.webview.postMessage(msg)
 	}
 }
 
 export function deleteCustomNoteCommand() {
-	NotelineViewProvider.webview.postMessage({ command: 'DELETE_NOTE', data: true })
+	const msgType: MsgTypeFromVscodeToWebview = 'DELETE_SELECTED_NOTE'
+	const msg: MsgFromVscodeToWebview<typeof msgType> = {
+		type: msgType,
+		data: ''
+	}
+	NotelineViewProvider.webview.postMessage(msg)
 }
 
-export function defaultCommand() {
-	console.log('defaultCommand')
+export function clearSystemNotesCommand() {
+	const msgType: MsgTypeFromVscodeToWebview = 'CLEAR_SYSTEM_NOTES'
+	const msg: MsgFromVscodeToWebview<typeof msgType> = {
+		type: msgType,
+		data: ''
+	}
+	NotelineViewProvider.webview.postMessage(msg)
 }

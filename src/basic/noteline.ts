@@ -1,4 +1,5 @@
-import { basename } from './basic/utils'
+import { basename } from './utils'
+import { orderBy, findIndex } from 'lodash'
 
 export type NoteColor = 'RED' | 'ORANGE' | 'YELLOW' | 'GREEN' | 'BLUE' | 'PURPLE'
 export type NoteColorMapping = Record<NoteColor, string>
@@ -13,7 +14,7 @@ export interface Note {
 	color: NoteColor,
   type: NoteType,
 	remark: string,
-	update: Date,
+	update: number,
   trend: number
 }
 
@@ -43,7 +44,27 @@ export function createNote(
     color: options?.color || 'RED',
     type: options?.type || 'CUSTOM',
     remark: options?.remark || '',
-    update: new Date(),
+    update: new Date().getTime(),
     trend: 0,
+  }
+}
+
+export function orderNotes(
+  notes: Note[],
+  key = 'trend',
+  orders: 'desc' | 'asc' = 'desc'
+): Note[] {
+  return orderBy(notes, key, orders)
+}
+
+export function findNote(notes: Note[], searchNote: Note): {
+  note: Note,
+  index: number
+} | null {
+  const index = findIndex(notes, { id: searchNote.id })
+  if (index === -1) return null
+  return {
+    note: notes[index],
+    index
   }
 }

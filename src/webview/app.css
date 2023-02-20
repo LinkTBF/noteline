@@ -1,35 +1,94 @@
 :root {
-  --note-item-height: 20px;
-  --note-item-font-size: 14px;
+  --noteline-base-height: 22px;
+  --noteline-padding: 5px;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html, body {
   margin: 0px;
-  padding: 0px;
+  background-color: var(--vscode-menu-background);
+	padding: 0px;
+	color: var(--vscode-foreground);
+	font-size: var(--vscode-font-size);
+	font-weight: var(--vscode-font-weight);
+	font-family: var(--vscode-font-family);
+}
+
+.head {
+  font-weight: 600;
+  padding-left: var(--noteline-padding);
+  position: fixed;
+  width: 100%;
+  height: var(--noteline-base-height);
+  line-height: var(--noteline-base-height);
+  color: var(--vscode-sideBarSectionHeader-foreground);
+  background-color: var(--vscode-sideBarSectionHeader-background);
+}
+
+.draggable {
+  position: fixed;
+  width: 100%;
+  height: calc(50vh - var(--noteline-base-height));
+  background-color: var(--vscode-menu-background);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .note-item {
-  widows: 100%;
-  height: var(--note-item-height);
-  line-height: var(--note-item-height);
-  padding: 0px 3px;
-  border: solid 1px white;
-  overflow: hidden;
-  white-space: nowrap;
+  width: 100%;
+  padding: var(--noteline-padding);
   cursor: pointer;
+  box-sizing: border-box;
 }
 
-.note-custom {
-  position: fixed;
-  top: 0vh;
-  height: 50vh;
-  width: 100%;
-  border-bottom: solid white 1px;
+.note-item:hover {
+	background-color: var(--vscode-sideBar-dropBackground);
 }
 
-.note-system {
-  position: fixed;
-  top: 50vh;
+.note-item .top {
+  height: var(--noteline-base-height);
+  display: flex;
   width: 100%;
-  height: 50vh;
+  justify-content: space-between;
+  line-height: var(--noteline-base-height);
+}
+
+.note-item .top .line {
+  color: var(--vscode-textLink-foreground);
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.note-item .top .basename {
+  width: calc(100% - var(--noteline-base-height));
+}
+
+.note-item .bottom {
+  font-size: calc(var(--vscode-font-size) - 1px);
+  width: 100%;
+  line-height: 1;
+  border-radius: 2px;
+  background-color: #111;
+  padding: 3px;
+  position: relative;
+}
+
+.note-item .bottom .trend {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  line-height: 1;
+  padding: 3px;
+  color: #666;
+  background-color: #111;
+  text-align: end;
+}
+
+.nowarp {
+  overflow: hidden;
+	text-overflow: ellipsis;
+  white-space: nowrap;
 }

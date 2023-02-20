@@ -6,7 +6,8 @@ export function template(source: string, data: Record<string, string>): string {
 }
 
 export function basename(filepath: string): string {
-  return filepath
+  const temp = filepath.split('/')
+  return temp[temp.length - 1]
 }
 
 export const chance = new Chance()
