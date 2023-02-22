@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
-import { jumpToLine } from './basic/vscode'
+import { jumpToLine } from './shared'
 import {
   MsgTypeFromWebviewToVscode,
 	MsgDataFromWebviewToVscode

@@ -92,3 +92,33 @@ html, body {
 	text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+#input-duck {
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  padding: calc(var(--noteline-padding) + 4px) var(--noteline-padding);
+  background-color: var(--vscode-menu-background);
+}
+
+#input {
+  border-style: solid;
+  color: var(--vscode-sideBarSectionHeader-foreground);
+  border-color: var(--vscode-settings-textInputBorder, transparent);
+  border-width: 1px;
+  outline: none;
+  width: 100%;
+  background-color: var(--vscode-input-background);
+  border-radius: 3px;
+}
+
+#input:hover {
+  border-color: transparent;
+  outline: none;
+}
+
+#input:focus {
+  border-color: transparent;
+  outline: none;
+}

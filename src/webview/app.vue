@@ -1,14 +1,12 @@
 <template>
   <div>
-    <div class="head" style="top: 0px;">
-      Custom Notes
-    </div>
-
-    <draggable class="draggable" :list="notes.custom" style="top: var(--noteline-base-height);"
-               item-key="id" group="note" @change="change($event, 'CUSTOM')"
+    <draggable v-for="draggableObj in draggables" class="draggable" :list="notes[draggableObj.key]"
+               :style="{top: draggableObj.top}" item-key="id" group="note"
+               @change="change($event, draggableObj.type)"
     >
       <template #item="{ element, index }">
         <div class="note-item" :data-note-item-index="index" :data-note-item-type="element.type"
+             :style="{backgroundColor: selectedNoteIndex === index && selectedNoteType === element.type ? 'var(--vscode-dropdown-background)' : ''}"
              @click="jump(index, element.type)"
         >
           <div class="top">
@@ -16,64 +14,65 @@
             <div class="basename nowarp">{{ element.basename }}</div>
           </div>
           <div class="bottom nowarp">
-            {{ element.content }}
+            {{ element.remark || element.content }}
             <div class="trend">{{ element.trend }}</div>
           </div>
         </div>
       </template>
     </draggable>
+
+    <div class="head" style="top: 0px;">
+      Custom Notes
+    </div>
 
     <div class="head" style="top: 50vh">
       System Records
     </div>
 
-    <draggable class="draggable system" :list="notes.system" style="top: calc(50vh + var(--noteline-base-height));"
-               item-key="id" group="note" @change="change($event, 'SYSTEM')"
-    >
-      <template #item="{ element, index }">
-        <div class="note-item" :data-note-item-index="index" :data-note-item-type="element.type"
-             @click="jump(index, element.type)"
-        >
-          <div class="top">
-            <div class="line">{{ element.line }}</div>
-            <div class="basename nowarp">{{ element.basename }}</div>
-          </div>
-          <div class="bottom nowarp">
-            {{ element.content }}
-            <div class="trend">{{ element.trend }}</div>
-          </div>
-        </div>
-      </template>
-    </draggable>
+    <div id="input-duck">
+      <input v-show="isShowInput" id="input" ref="input" v-model="remark"
+             @blur="editConfirm" @keyup.enter="editConfirm"
+      >
+    </div>
   </div>
 </template>
 
 <script setup lang='ts'>
 import draggable from 'vuedraggable'
 import { take } from 'lodash'
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import { Note, createNote, NoteType, findNote, orderNotes } from '../basic/noteline'
 import {
-  MsgTypeFromWebviewToVscode,
-  MsgFromWebviewToVscode,
   MsgTypeFromVscodeToWebview,
-  MsgDataFromVscodeToWebview
+  MsgDataFromVscodeToWebview,
+  sendMsgFromWebviewToVscode
 } from '../basic/message'
 
 // PROXY VAR ------------------------------------
 
-const notes = reactive<{
-  system: Note[],
-  custom: Note[]
-}>({ 
-  system: [],
-  custom: []
-})
 const maxTrend = 300
 const maxSystemLength = 100
 const minContentLength = 6
-const curSelectedIndex = ref<number  | null>(null)
-const curSelectedType = ref<NoteType | null>(null)
+
+const draggables = ref<{
+  key: 'custom' | 'system',
+  type: NoteType,
+  top: string
+}[]>([{
+  key: 'custom',
+  type: 'CUSTOM',
+  top: 'var(--noteline-base-height)'
+}, {
+  key: 'system',
+  type: 'SYSTEM',
+  top: 'calc(50vh + var(--noteline-base-height))'
+}])
+const notes = reactive<{ system: Note[], custom: Note[] }>({ system: [], custom: [] })
+const remark = ref('')
+const input = ref<any>(null)
+const isShowInput = ref<boolean>(false)
+const selectedNoteIndex = ref<number  | null>(null)
+const selectedNoteType = ref<NoteType | null>(null)
 
 // MISC ---------------------------------------
 
@@ -90,7 +89,7 @@ if (oldState !== undefined) {
 
 // FUNCTIONS -----------------------------------
 
-function updateNotes(options?: {
+function syncNotes(options?: {
   system?: Note[],
   custom?: Note[],
   isTake?: boolean
@@ -111,49 +110,67 @@ function updateNotes(options?: {
   })
 }
 
-function change(e: any, noteType: NoteType) {
-  if (e?.added) {
-    e.added.element.type = noteType
+function editConfirm() {
+  if (!remark.value) {
+    return
   }
 
-  updateNotes()
+  const selectedNote = getSelectedNote()
+  selectedNote && (selectedNote.remark = remark.value)
+  remark.value = ''
+  isShowInput.value = false
+
+  syncNotes()
 }
 
-function jump(index: number, noteType: NoteType) {
-  let data: any
+function noteTypeToKey(type: NoteType): 'custom' | 'system' {
+  return type === 'CUSTOM' ? 'custom' : 'system'
+}
 
-  if(noteType === 'CUSTOM') {
-    data = {
-      filepath: notes.custom[index].filepath,
-      line: notes.custom[index].line.toString()
-    }
-  } else {
-    data = {
-      filepath: notes.system[index].filepath,
-      line: notes.system[index].line.toString()
-    }
+function getSelectedNote(): Note | null {
+  if (selectedNoteType.value === null || selectedNoteIndex.value === null) {
+    return null
   }
+  return notes[noteTypeToKey(selectedNoteType.value)][selectedNoteIndex.value]
+}
 
-  const msgType: MsgTypeFromWebviewToVscode = 'JUMP'
-  const msg: MsgFromWebviewToVscode<typeof msgType> = {
-    type: msgType, data
+function setSelectedNote(index: number | null, type: NoteType | null) {
+  selectedNoteIndex.value = index
+  selectedNoteType.value = type
+}
+
+function deleteSelectedNote() {
+  if(selectedNoteType.value === null || selectedNoteIndex.value === null) {
+    return
   }
-  vscode.postMessage(msg)
+  notes[noteTypeToKey(selectedNoteType.value)].splice(selectedNoteIndex.value, 1)
+}
+
+function change(e: any, noteType: NoteType) {
+  e?.added && (e.added.element.type = noteType)
+  syncNotes()
+}
+
+function jump(index: number, type: NoteType) {
+  setSelectedNote(index, type)
+  const note = notes[noteTypeToKey(type)][index]
+
+  sendMsgFromWebviewToVscode(vscode, 'JUMP', { filepath: note.filepath, line: note.line.toString() })
 }
 
 // LISTENER -------------------------------------
 
 window.addEventListener('contextmenu', (e: any) => {
-  if (e?.target?.dataset?.noteItemIndex) {
-    curSelectedIndex.value = parseInt(e.target.dataset.noteItemIndex)
-    curSelectedType.value = e.target.dataset.noteItemType
-  } else {
-    curSelectedIndex.value = null
-    curSelectedType.value = null
+  const noteItem = e.path.find((x: any) => x.className === 'note-item')
+  if (noteItem?.dataset?.noteItemIndex && noteItem?.dataset?.noteItemType) {
+    setSelectedNote(parseInt(noteItem.dataset.noteItemIndex), noteItem.dataset.noteItemType)
+    return
   }
+
+  setSelectedNote(null, null)
 })
 
-window.addEventListener('message', e => {
+window.addEventListener('message', async e => {
   const message = e.data
   const msgType = message.type as MsgTypeFromVscodeToWebview
 
@@ -170,8 +187,6 @@ window.addEventListener('message', e => {
     if (!foundRes) {
       notes.system.push(note)
     }
-
-    updateNotes()
   }
 
   if (msgType === 'ADD_TREND') {
@@ -186,22 +201,18 @@ window.addEventListener('message', e => {
       }
 
       if (x.line > startLine && x.line < endLine) {
-        if (x.trend < maxTrend) {
-          x.trend += 1
-        }
+        (x.trend < maxTrend) && (x.trend += 1)
         x.update = new Date().getTime()
       }
     })
 
-    updateNotes({
-      isTake: true
-    })
+    syncNotes({ isTake: true })
+    return
   }
 
   if (msgType === 'ADD_NOTE') {
     const msgData = message.data as MsgDataFromVscodeToWebview[typeof msgType]
     const note: Note = JSON.parse(msgData.note)
-
     note.content = note.content.trim()
 
     const foundCustomRes = findNote(notes.custom, note)
@@ -215,23 +226,28 @@ window.addEventListener('message', e => {
     } else {
       notes.custom.push(note)
     }
-
-    updateNotes()
   }
 
   if (msgType === 'DELETE_SELECTED_NOTE') {
-    if (curSelectedIndex.value === null || curSelectedType.value === null) {
-      return
-    }
+    deleteSelectedNote()
+    return
+  }
 
-    notes[curSelectedType.value === 'CUSTOM' ? 'custom' : 'system'].splice(curSelectedIndex.value, 1)
+  if (msgType === 'EDIT_REMARK') {
+    const selectedNote = getSelectedNote()
+    if (selectedNote) {
+      isShowInput.value = true
+      remark.value = selectedNote.remark || 'REMARK!'
+      await nextTick()
+      input.value.focus()
+    }
   }
 
   if (msgType === 'CLEAR_SYSTEM_NOTES') {
-    updateNotes({
-      custom: [],
-      system: []
-    })
+    syncNotes({ system: [] })
+    return
   }
+
+  syncNotes()
 })
 </script>

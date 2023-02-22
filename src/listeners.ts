@@ -1,10 +1,7 @@
 import * as vscode from 'vscode'
 import { Note, createNote } from './basic/noteline'
 import { NotelineViewProvider } from './providers'
-import {
-  MsgTypeFromVscodeToWebview,
-	MsgFromVscodeToWebview
-} from './basic/message'
+import { sendMsgFromVscodeToWebview } from './basic/message'
 
 export function registerListeners() {
 
@@ -16,39 +13,20 @@ export function registerListeners() {
 			type: 'SYSTEM'
 		})
 
-		const msgType: MsgTypeFromVscodeToWebview = 'RECORD'
-		const msg: MsgFromVscodeToWebview<typeof msgType> = {
-			type: msgType,
-			data: {
-				note: JSON.stringify(note)
-			}
-		}
-		NotelineViewProvider.webview.postMessage(msg)
+		sendMsgFromVscodeToWebview(NotelineViewProvider.webview, 'RECORD', { note: JSON.stringify(note) })
 	})
 
 	vscode.window.onDidChangeTextEditorVisibleRanges(e => {
 		const fileName = e.textEditor.document.fileName
 		
-		const msgType: MsgTypeFromVscodeToWebview = 'ADD_TREND'
-		const msg: MsgFromVscodeToWebview<typeof msgType> = {
-			type: msgType,
-			data: {
+		sendMsgFromVscodeToWebview(
+			NotelineViewProvider.webview,
+			'ADD_TREND',
+			{
 				filepath: fileName,
 				startLine: e.visibleRanges[0].start.line.toString(),
 				endLine: e.visibleRanges[0].end.line.toString()
 			}
-		}
-		NotelineViewProvider.webview.postMessage(msg)
-		// const line = e.textEditor.selections.anchor.line
-		// const note: Note = createNote(document.fileName, document.lineAt(line).text, line)
-		
-		// const msgType: MsgTypeFromVscodeToWebview = 'RECORD'
-		// const msg: MsgFromVscodeToWebview<typeof msgType> = {
-		// 	type: msgType,
-		// 	data: {
-		// 		note: JSON.stringify(note)
-		// 	}
-		// }
-		// NotelineViewProvider.webview.postMessage(msg)
+		)
 	})
 }
