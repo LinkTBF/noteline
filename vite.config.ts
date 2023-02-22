@@ -13,5 +13,8 @@ module.exports = defineConfig({
 		},
 		emptyOutDir: false,
 		outDir: 'build/ts/compiled'
+	},
+	server: {
+		port: 3030
 	}
 })

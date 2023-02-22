@@ -16,6 +16,6 @@
   },
   "include": [
     "src/extension.ts",
-    "src/BaseViewProvider.ts"
+    "src/**/*.d.ts"
   ]
 }

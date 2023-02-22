@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="index.css" rel="stylesheet">
+    <title>Noteline</title>
+  </head>
+  <body>
+    <script>
+      let vscode
+      let mock
+      try {
+        vscode = acquireVsCodeApi()
+        mock = false
+      } catch (e) {
+        vscode = {
+          postMessage: (message) => { console.log(message) },
+          getState: () => {},
+          setState: (state) => { console.log(state) },
+        }
+        mock = true
+      }
+    </script>
+    <div id="app"></div>
+    <script type="module" src="./src/webview/index.ts"></script>
+  </body>
+</html>

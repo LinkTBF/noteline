@@ -1,9 +1,12 @@
 {
   "name": "noteline",
-  "displayName": "noteline",
+  "displayName": "Noteline",
   "description": "A vscode extension to record the line you jumped frequently",
   "version": "1.0.0",
   "author": "SamNofee",
+  "publisher": "Nofee",
+  "repository": "https://github.com/SamNofee/noteline",
+  "icon": "public/icon.png",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -13,45 +16,41 @@
   ],
   "main": "./build/ts/extension.js",
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "noteline.close",
-        "title": "Noteline: Close"
+        "command": "noteline.addNote",
+        "title": "Noteline: Add note"
       },
       {
-        "command": "noteline.open",
-        "title": "Noteline: Open"
+        "command": "noteline.deleteCustomNote",
+        "title": "Noteline: Delete custom note"
       },
       {
-        "command": "noteline.setting",
-        "title": "Noteline: Setting"
+        "command": "noteline.clearSystemNotes",
+        "title": "Noteline: Clear system notes"
       },
       {
-        "command": "noteline.record",
-        "title": "Noteline: Record"
-      },
-      {
-        "command": "noteline.showRecord",
-        "title": "Noteline: Show Record"
+        "command": "noteline.editRemark",
+        "title": "Noteline: Edit remark"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "noteline_activebar",
+          "id": "noteline_activitybar",
           "title": "Noteline",
-          "icon": "./src/assets/logo.svg"
+          "icon": "./public/activitybar.png"
         }
       ]
     },
     "views": {
-      "noteline_activebar": [
+      "noteline_activitybar": [
         {
           "type": "webview",
-          "id": "noteline_main_view",
+          "id": "noteline_view",
           "name": "Noteline"
         }
       ]
@@ -59,28 +58,47 @@
     "menus": {
       "editor/context": [
         {
-          "command": "noteline.record",
+          "command": "noteline.addNote",
           "when": "editorTextFocus",
           "group": "navigation"
+        }
+      ],
+      "webview/context": [
+        {
+          "command": "noteline.editRemark",
+          "group": "navigation",
+          "when": "webviewId == noteline_view"
         },
         {
-          "command": "noteline.showRecord",
-          "when": "editorTextFocus",
-          "group": "navigation"
+          "command": "noteline.deleteCustomNote",
+          "group": "navigation",
+          "when": "webviewId == noteline_view"
+        },
+        {
+          "command": "noteline.clearSystemNotes",
+          "group": "navigation",
+          "when": "webviewId == noteline_view"
         }
       ]
     }
   },
   "scripts": {
+    "package": "vsce package",
     "build": "npm run build:ts && npm run build:vite",
     "build:ts": "npx tsc -p ./tsconfig.extension.json --skipLibCheck",
-    "build:vite": "vite build",
-    "lint": "eslint \"src/**/*.{ts,vue}\""
+    "build:vite": "npx vite build",
+    "dev": "npx nodemon -e ts,vue,css --exec npm run build",
+    "vite": "npx vite ./public --config vite.config.ts --open",
+    "lint": "npx eslint \"src/**/*.{ts,vue}\"",
+    "test": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' npx mocha -- --exit",
+    "test:grep": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' npx mocha -- --exit --grep"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "chance": "^1.1.9",
-    "lodash": "^4.17.21",
-    "vue": "^3.2.45",
+    "@types/lodash": "^4.14.191",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.17",
     "@types/vscode": "^1.73.0",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
@@ -89,8 +107,26 @@
     "eslint": "^8.30.0",
     "eslint-plugin-vue": "^9.8.0",
     "jsdom": "^20.0.3",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.20",
+    "power-assert": "^1.6.1",
+    "should": "^13.2.3",
+    "simple-git-hooks": "^2.8.1",
+    "ts-node": "^10.9.1",
     "typescript": "^4.8.4",
     "vite": "^2.9.14",
-    "vue-tsc": "^0.40.6"
+    "vue": "^3.2.45",
+    "vue-tsc": "^0.40.6",
+    "vuedraggable": "^4.1.0"
+  },
+  "simple-git-hooks": {
+    "pre-push": ""
+  },
+  "mocha": {
+    "extension": [
+      "ts"
+    ],
+    "spec": "src/**/*.test.ts",
+    "require": "ts-node/register"
   }
 }

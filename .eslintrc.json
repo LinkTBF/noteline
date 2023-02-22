@@ -23,16 +23,21 @@
     "vue/require-v-for-key": "off",
     "vue/multi-word-component-names": "off",
     "vue/valid-v-for": "off",
-    "vue/first-attribute-linebreak": ["error", {
-      "singleline": "beside",
-      "multiline": "beside"
-    }],
-    "vue/max-attributes-per-line": ["error", {
-      "singleline": 5,  
-      "multiline": 5
-    }],
-    "vue/html-quotes": [ "error", "single", { "avoidEscape": true } ],
-    
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/first-attribute-linebreak": [
+      "error",
+      {
+        "singleline": "beside",
+        "multiline": "beside"
+      }
+    ],
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        "singleline": 5,
+        "multiline": 5
+      }
+    ],
     "@typescript-eslint/no-unused-vars": [
       "warn"
     ],
@@ -50,7 +55,6 @@
     "@typescript-eslint/semi": [
       "off"
     ],
-
     "space-before-blocks": "off",
     "quotes": [
       "error",
