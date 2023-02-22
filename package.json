@@ -6,7 +6,7 @@
   "author": "SamNofee",
   "publisher": "Nofee",
   "repository": "https://github.com/SamNofee/noteline",
-  "icon": "icon.png",
+  "icon": "public/icon.png",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -42,7 +42,7 @@
         {
           "id": "noteline_activitybar",
           "title": "Noteline",
-          "icon": "./activitybar.png"
+          "icon": "./public/activitybar.png"
         }
       ]
     },
@@ -88,13 +88,15 @@
     "build:ts": "npx tsc -p ./tsconfig.extension.json --skipLibCheck",
     "build:vite": "npx vite build",
     "dev": "npx nodemon -e ts,vue,css --exec npm run build",
-    "vite": "npx vite ./src/webview --config vite.config.ts --open",
+    "vite": "npx vite ./public --config vite.config.ts --open",
     "lint": "npx eslint \"src/**/*.{ts,vue}\"",
     "test": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' npx mocha -- --exit",
     "test:grep": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' npx mocha -- --exit --grep"
   },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
-    "@types/chance": "^1.1.3",
     "@types/lodash": "^4.14.191",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.17",
@@ -102,11 +104,9 @@
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "@vitejs/plugin-vue": "^2.3.3",
-    "chance": "^1.1.9",
     "eslint": "^8.30.0",
     "eslint-plugin-vue": "^9.8.0",
     "jsdom": "^20.0.3",
-    "lodash": "^4.17.21",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
     "power-assert": "^1.6.1",

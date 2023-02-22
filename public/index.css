@@ -28,6 +28,14 @@ html, body {
   background-color: var(--vscode-sideBarSectionHeader-background);
 }
 
+#head-custom {
+  top: 0px;
+}
+
+#head-system {
+  top: 50vh;
+}
+
 .draggable {
   position: fixed;
   width: 100%;

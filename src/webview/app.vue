@@ -21,11 +21,11 @@
       </template>
     </draggable>
 
-    <div class="head" style="top: 0px;">
+    <div class="head" id="head-custom">
       Custom Notes
     </div>
 
-    <div class="head" style="top: 50vh">
+    <div class="head" id="head-system">
       System Records
     </div>
 

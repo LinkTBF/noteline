@@ -34,7 +34,7 @@ export class NotelineViewProvider implements vscode.WebviewViewProvider {
 	 * @param {vscode.Uri} _extensionUri
 	 */
 	constructor(private _extensionUri: vscode.Uri) {
-		const htmlUri = vscode.Uri.joinPath(this._extensionUri, 'src/webview', 'index.html')
+		const htmlUri = vscode.Uri.joinPath(this._extensionUri, 'public', 'index.html')
 		NotelineViewProvider.html = fs.readFileSync(htmlUri.fsPath, 'utf8')
 	}
 
@@ -79,12 +79,12 @@ export class NotelineViewProvider implements vscode.WebviewViewProvider {
 	 * @returns {string}
 	 */
 	private _getHtml(webview: vscode.Webview): string {
-		const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'src/webview', 'app.css'))
+		const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'public', 'index.css'))
 		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'build/ts/compiled', 'index.es.js'))
 
 		return NotelineViewProvider.html
-			.replace('app.css',  styleUri.toString())
-			.replace('./index.ts', scriptUri.toString())
+			.replace('index.css',  styleUri.toString())
+			.replace('./src/webview/index.ts', scriptUri.toString())
 	}
 
 
